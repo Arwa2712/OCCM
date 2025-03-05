@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riyadh Map with Pulsating Points</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 500px; }
+        .pulsating-circle {
+            width: 20px;
+            height: 20px;
+            background-color: green;
+            border-radius: 50%;
+            opacity: 0.7;
+            position: absolute;
+            animation: pulse 1s infinite alternate ease-in-out;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            100% { transform: scale(2); opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([24.7136, 46.6753], 12);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
+        }).addTo(map);
+
+        var locations = [
+            [24.7136, 46.6753],
+            [24.7261, 46.7001],
+            [24.7098, 46.6895],
+            [24.7215, 46.6523],
+            [24.7350, 46.6712]
+        ];
+
+        locations.forEach(function(coord) {
+            var circle = L.circle(coord, {
+                color: 'green',
+                fillColor: 'green',
+                fillOpacity: 0.5,
+                radius: 150
+            }).addTo(map);
+            
+            function animateCircle() {
+                let growing = true;
+                setInterval(() => {
+                    let currentRadius = circle.getRadius();
+                    if (growing) {
+                        circle.setRadius(currentRadius * 1.5);
+                    } else {
+                        circle.setRadius(currentRadius / 1.5);
+                    }
+                    growing = !growing;
+                }, 1000);
+            }
+            animateCircle();
+        });
+    </script>
+</body>
+</html>
